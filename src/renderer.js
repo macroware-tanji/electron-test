@@ -1,5 +1,5 @@
 // In the renderer process.
-const {ipcRenderer} = require('electron')
+//const {ipcRenderer} = require('electron')
 
 const videoElem = document.getElementById("video");
 const logElem = document.getElementById("log");
@@ -30,8 +30,9 @@ console.info = (msg) => logElem.innerHTML += `<span class="info">${msg}</span><b
 
 async function startCapture() {
     logElem.innerHTML = "";
+    thumbnailElem.innerHTML = ""
     console.log("startCapture")
-    const sources = await ipcRenderer.invoke('capture-screen');
+    const sources = await window.captureScreen();
     let names = "";
     for (const source of sources) {
       //if (source.name === 'Electron') {
@@ -44,8 +45,6 @@ async function startCapture() {
       //   thumbnailImage.src = source.thumbnail.toDataURL();
       //   thumbnailElem.appendChild(thumbnailImage);
       thumbnailElem.innerHTML += `<img src="${source.thumbnail.toDataURL()}"/><br>`;
-
-
     }
     console.log(names)
 
@@ -80,8 +79,8 @@ async function startCapture() {
     // let tracks = videoElem.srcObject.getTracks();
   
     // tracks.forEach((track) => track.stop());
-    // videoElem.srcObject = null;
-    
+    videoElem.srcObject = null;
+    thumbnailElem.innerHTML = ""
 }
 // console.log(desktopCapturer)
 // desktopCapturer.getSources({types: ['window', 'screen']}, (error, sources) => {
@@ -110,9 +109,9 @@ async function startCapture() {
 
   
   function handleStream (stream) {
-    const video = document.querySelector('video')
-    video.srcObject = stream
-    video.onloadedmetadata = (e) => video.play()
+    //const video = document.querySelector('video')
+    videoElem.srcObject = stream
+    videoElem.onloadedmetadata = (e) => video.play()
   }
   
   function handleError (e) {

@@ -1,3 +1,5 @@
+const { ipcRenderer } = require('electron');
+
 // Node.jsのすべてのAPIがプリロード処理で利用可能です。
 // Chromeの拡張機能と同じサンドボックスを持っています。
 window.addEventListener("DOMContentLoaded", () => {
@@ -14,3 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
       replaceText(`${dependency}-version`, process.versions[dependency]);
     }
   });
+
+window.captureScreen = () => {
+    return ipcRenderer.invoke('capture-screen');
+};

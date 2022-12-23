@@ -12,7 +12,7 @@ const createWindow = () => {
     webPreferences: {
       // プリロードスクリプトは、レンダラープロセスが読み込まれる前に実行され、
       // レンダラーのグローバル（window や document など）と Node.js 環境の両方にアクセスできます。
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: false,
       //webSecurity:false,
       preload: path.join(__dirname, "preload.js"),
