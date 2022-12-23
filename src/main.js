@@ -56,74 +56,12 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.handle('capture-screen', async (_e, _arg) => {
-  return desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-    // let names = ""
-    // for (const source of sources) {
-    //   //if (source.name === 'Electron') {
-    //   //  //mainWindow.webContents.send('SET_SOURCE', source.id)
-    //   //  return
-    //   //}
-    //   names += source.name
-    // }
+  let sources
+  try{
+    sources = await desktopCapturer.getSources({ types: ['window', 'screen'] })
+  }
+  catch(e){
+    console.log(e)
+  }
     return sources
-  })
-
-  //return "aaabbbccc"
-  // return dialog
-  //   // ファイル選択ダイアログを表示する
-  //   .showOpenDialog(mainWindow, {
-  //     properties: ['openFile'],
-  //   })
-  //   .then((result) => {
-  //     // キャンセルボタンが押されたとき
-  //     if (result.canceled) return '';
-
-  //     // 選択されたファイルの絶対パスを返す
-  //     return result.filePaths[0];
-  //   });
-});
-// desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-//   console.log(sources)
-//   for (const source of sources) {
-//     if (source.name === 'Electron') {
-//       //mainWindow.webContents.send('SET_SOURCE', source.id)
-//       return
-//     }
-//   }
-// })
-
-//console.log(desktopCapturer)
-// desktopCapturer.getSources({types: ['window', 'screen']}, (error, sources) => {
-//     if (error) throw error
-//     // for (let i = 0; i < sources.length; ++i) {
-//     //   if (sources[i].name === 'Electron') {
-//     //     navigator.mediaDevices.getUserMedia({
-//     //       audio: false,
-//     //       video: {
-//     //         mandatory: {
-//     //           chromeMediaSource: 'desktop',
-//     //           chromeMediaSourceId: sources[i].id,
-//     //           minWidth: 1280,
-//     //           maxWidth: 1280,
-//     //           minHeight: 720,
-//     //           maxHeight: 720
-//     //         }
-//     //       }
-//     //     })
-//     //     .then((stream) => handleStream(stream))
-//     //     .catch((e) => handleError(e))
-//     //     return
-//     //   }
-//     // }
-//   })
-
-  
-//   function handleStream (stream) {
-//     // const video = document.querySelector('video')
-//     // video.srcObject = stream
-//     // video.onloadedmetadata = (e) => video.play()
-//   }
-  
-//   function handleError (e) {
-//     console.log(e)
-//   }
+})
