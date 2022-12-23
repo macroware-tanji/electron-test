@@ -1,13 +1,22 @@
 // In the renderer process.
 //const {ipcRenderer} = require('electron')
 
-const videoElem = document.getElementById("video");
+const localVideo = document.getElementById("local_video");
+const remoteVideo = document.getElementById("remote_video");
 const logElem = document.getElementById("log");
 const startElem = document.getElementById("start");
 const stopElem = document.getElementById("stop");
+const connElem = document.getElementById("connect");
 
 const thumbnailElem = document.getElementById("thumbnail");
-  
+
+let localStream = null
+
+//let peerConnection = null;
+
+const textForSendSdp = document.getElementById('text_for_send_sdp');
+const textToReceiveSdp = document.getElementById('text_for_receive_sdp');
+
 // Set event listeners for the start and stop buttons
 startElem.addEventListener("click", (evt) => {
     startCapture();
@@ -15,6 +24,12 @@ startElem.addEventListener("click", (evt) => {
 
 stopElem.addEventListener("click", (evt) => {
     stopCapture();
+}, false);
+
+connElem.addEventListener("click", (evt) => {
+    if(localStream!=null){
+        window.connectPeer();
+    }
 }, false);
 
 console.log = (msg) => logElem.innerHTML += `${msg}<br>`;
@@ -31,7 +46,11 @@ async function startCapture() {
     for (const source of sources) {
         names += source.name
         console.log(source.thumbnail.toDataURL())
-        thumbnailElem.innerHTML += `<img src="${source.thumbnail.toDataURL()}"/><br>`;
+
+        const image = document.createElement('img');
+        image.src = source.thumbnail.toDataURL()
+        //thumbnailElem.innerHTML += `<img src="${source.thumbnail.toDataURL()}"/>`;
+        thumbnailElem.appendChild(image)
     }
     console.log(names)
 
@@ -50,7 +69,11 @@ async function startCapture() {
             }
         }
         const stream = await navigator.mediaDevices.getUserMedia(displayMediaOptions)
-        handleStream(stream)
+
+        localStream = stream
+        window.setLocalStream(stream)
+
+        window.playVideo(localVideo,stream)
     } catch (e) {
         handleError(e)
     }
@@ -58,15 +81,44 @@ async function startCapture() {
 
   function stopCapture(evt) {
     console.log("stopCapture")
-    videoElem.srcObject = null;
+    //videoElem.srcObject = null;
+    window.pauseVideo(localVideo)
+    window.stopLocalStream(localStream)
     thumbnailElem.innerHTML = ""
 }
   
-function handleStream (stream) {
-    videoElem.srcObject = stream
-    videoElem.onloadedmetadata = (e) => video.play()
-}
+// function handleStream (stream) {
+//     videoElem.srcObject = stream
+//     videoElem.onloadedmetadata = (e) => videoElem.play()
+// }
 
 function handleError (e) {
     console.log(e)
 }
+
+// function playVideo(element, stream){
+//     window.playVideo(element, stream)
+//     //element.srcObject = stream;
+//     //element.onloadedmetadata = (e) => element.play()
+// }
+
+// function pauseVideo(element) {
+//     window.pauseVideo( stream)
+//     //element.pause()
+//     //element.srcObject = null;
+// }
+
+// function stopLocalStream(stream){
+//     window.stopLocalStream(stream)
+//     //let tracks = stream.getTracks();
+//     //if (! tracks) {
+//     //  console.warn('NO tracks');
+//     //  return;
+//     //}
+//     //
+//     //for (let track of tracks) {
+//     //  track.stop();
+//     //}    
+// }
+
+

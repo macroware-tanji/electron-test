@@ -63,5 +63,5 @@ ipcMain.handle('capture-screen', async (_e, _arg) => {
   catch(e){
     console.log(e)
   }
-    return sources
+  return sources
 })
